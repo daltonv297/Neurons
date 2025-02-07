@@ -21,8 +21,16 @@ class NeuralNetwork:
 
     
     def update(self, dt):
-        activation = np.tanh(self.excitation)
+        activation = sigmoid(self.excitation)
         random_exc = self.rng.uniform(-1, 1, self.num_neurons) * self.alpha_modul
         random_exc[self.rng.uniform() < 1 - self.prob_modul] = 0
         delta_exc = self.connection_map @ activation + random_exc
         self.excitation += dt / self.tau  * (-self.excitation + delta_exc)
+
+    
+    def perturb(self, mag=1):
+        self.excitation += self.rng.uniform(-1, 1, self.num_neurons) * mag
+
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-100*x))
